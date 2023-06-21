@@ -11,3 +11,7 @@
 ### 1.0.1 (2023-6-21)
 
 - updated changelog
+
+### 1.0.2 (2023-6-21)
+
+- update import wallet to accept private key with or without '0x’ prefixed
