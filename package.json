@@ -1,6 +1,6 @@
 {
   "name": "@getsafle/vault-optimism-controller",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "optimism controller for safle vault",
   "engines": {
     "node": ">= 10"
