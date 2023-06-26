@@ -15,3 +15,7 @@
 ### 1.0.2 (2023-6-21)
 
 - update import wallet to accept private key with or without '0x’ prefixed
+
+### 1.0.3 (2023-6-26)
+
+- Added cicd to push npm package
