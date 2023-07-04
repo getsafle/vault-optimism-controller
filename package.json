@@ -1,6 +1,6 @@
 {
   "name": "@getsafle/vault-optimism-controller",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "optimism controller for safle vault",
   "engines": {
     "node": ">= 10"
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/getsafle/vault-optimism-controller.git"
   },
   "keywords": [
-    "BSC",
+    "optimism",
     "keyring"
   ],
   "author": "",
