@@ -23,3 +23,7 @@
 ### 1.0.4 (2023-6-26)
 
 - NPM and node version fixes
+
+### 1.0.5 (2023-07-04)
+
+- Added test suite for Optimism controller
