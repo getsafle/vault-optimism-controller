@@ -27,3 +27,9 @@
 ### 1.0.5 (2023-07-04)
 
 - Added test suite for Optimism controller
+
+### 1.0.6 (2023-07-04)
+
+- Updated CI for test cases
+- Added coverage report for the test cases
+- Added nyc dependency for the coverage report
