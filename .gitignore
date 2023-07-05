@@ -1,4 +1,4 @@
 node_modules
-
-
+jscoverage
+.nyc_output
 test_controller_optimism.js
