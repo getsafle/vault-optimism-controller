@@ -1,6 +1,6 @@
 # Vault-optimism-controller <code><a href="https://www.docker.com/" target="_blank"><img height="50" src="https://assets.coingecko.com/coins/images/25244/small/Optimism.png?1660904599"></a></code>
 
-<img alt="Static Badge" src="https://img.shields.io/badge/version-v1.0.6-blue">  <img alt="Static Badge" src="https://img.shields.io/badge/nvm-v6.0.6-red">  <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-green">   [![Discussions][discussions-badge]][discussions-link]
+[![npm version](https://badge.fury.io/js/@getsafle%2Fvault-optimism-controller.svg)](https://badge.fury.io/js/@getsafle%2Fvault-optimism-controller)    <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-green">   [![Discussions][discussions-badge]][discussions-link]
  <img alt="Static Badge" src="https://img.shields.io/badge/Optimism_controller-documentation-purple">   
 
 A Module written in javascript for managing various keyrings of Optimism accounts, encrypting them, and using them.
