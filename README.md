@@ -16,7 +16,6 @@ A Module written in javascript for managing various keyrings of Optimism account
   - [Sign a message](#sign-a-message)
   - [Get balance](#get-balance)
 
-
 ## Installation
 ```
 npm install --save @getsafle/vault-optimism-controller
