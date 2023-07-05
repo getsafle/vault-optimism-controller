@@ -34,3 +34,7 @@
 - Added coverage report for the test cases
 - Added nyc dependency for the coverage report
 - Added badges for readme
+
+### 1.0.7 (2023-07-05)
+
+- cleaned package structure
