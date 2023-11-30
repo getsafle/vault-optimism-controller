@@ -28,7 +28,7 @@
     "keyring"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/getsafle/vault-optimism-controller/issues"
   },
