@@ -38,3 +38,8 @@
 ### 1.0.7 (2023-07-05)
 
 - cleaned package structure
+
+### 1.0.8 (2023-11-30)
+
+- Updated the getFees() method for gas estimation and added its test.
+- Changed the License to MIT.
