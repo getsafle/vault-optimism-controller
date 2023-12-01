@@ -91,7 +91,6 @@ describe('Initialize wallet ', () => {
     console.log(" with manual gasLimit ", fees)
 
     const privateKey = await optimismKeyring.exportAccount(accounts[0])
-    //console.log('privateKey=',privateKey)
     const tx3 = await optimismKeyring.sign(TESTING_MESSAGE_1, privateKey, web3)
     console.log("tx3 ", tx3)
 })
@@ -149,8 +148,6 @@ describe('Initialize wallet ', () => {
         const signedTX = await optimismKeyring.signTransaction(rawTx, privateKey)
         console.log("signedTX ", signedTX)
 
-       // const sentTX = await optimismKeyring.sendTransaction(signedTX, web3)
-        //console.log("sentTX ", sentTX)
     })
 
 })
