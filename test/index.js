@@ -91,7 +91,6 @@ describe('Initialize wallet ', () => {
     console.log(" with manual gasLimit ", fees)
 
     const privateKey = await optimismKeyring.exportAccount(accounts[0])
-    //console.log('privateKey=',privateKey)
     const tx3 = await optimismKeyring.sign(TESTING_MESSAGE_1, privateKey, web3)
     console.log("tx3 ", tx3)
 })
@@ -109,6 +108,19 @@ describe('Initialize wallet ', () => {
         console.log(" get balance ", balance, accounts)
     })
 
+    it("Get fees for a optimism tx", async () => {
+        const accounts = await optimismKeyring.getAccounts()
+        const web3 = new Web3(TESTNET.URL);
+        const tx = {
+            from:accounts[0], 
+            to:'0x641BB2596D8c0b32471260712566BF933a2f1a8e',
+            value:0,
+            data:"0x00"
+        }
+        const getEstimate = await optimismKeyring.getFees(tx, web3)
+        console.log(" get gas estimate  ", getEstimate)
+    
+    })
     it("sign Transaction ", async () => {
 
         const accounts = await optimismKeyring.getAccounts()
@@ -136,8 +148,6 @@ describe('Initialize wallet ', () => {
         const signedTX = await optimismKeyring.signTransaction(rawTx, privateKey)
         console.log("signedTX ", signedTX)
 
-       // const sentTX = await optimismKeyring.sendTransaction(signedTX, web3)
-        //console.log("sentTX ", sentTX)
     })
 
 })
