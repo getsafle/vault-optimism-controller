@@ -1,6 +1,6 @@
 {
   "name": "@getsafle/vault-optimism-controller",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "optimism controller for safle vault",
   "engines": {
     "node": ">= 10"
@@ -17,7 +17,9 @@
     "cover:reporthtml": "nyc report --reporter=html --report-dir='./jscoverage'"
   },
   "nyc": {
-    "exclude": ["test/**.js"]
+    "exclude": [
+      "test/**.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,7 @@
     "nyc": "^15.0.0"
   },
   "dependencies": {
+    "axios": "^1.6.2",
     "bip39": "^3.0.4",
     "browser-passworder": "^2.0.3",
     "crypto-js": "^4.1.1",
