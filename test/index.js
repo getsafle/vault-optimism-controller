@@ -107,4 +107,41 @@ describe('Initialize wallet ', () => {
         console.log(" get gas estimate:  ", getEstimate);
 
     })
+
+    it("sign Transaction ", async () => {
+
+        const accounts = await optimismKeyring.getAccounts()
+        const from = accounts[0]
+        const web3 = new Web3(TESTNET.URL);
+
+        const count = await web3.eth.getTransactionCount(from);
+
+        const defaultNonce = await web3.utils.toHex(count);
+        const to = '0x641BB2596D8c0b32471260712566BF933a2f1a8e' 
+
+        const getFeeEstimate= await optimismKeyring.getFees({from,to,
+            value: web3.utils.numberToHex(web3.utils.toWei('0.00001', 'ether')),data:"0x00"},web3);
+            console.log(getFeeEstimate);
+
+            
+
+        const rawTx = {
+            to,
+            from,
+            value: web3.utils.numberToHex(web3.utils.toWei('0.00001', 'ether')),
+            gasLimit: getFeeEstimate.gasLimit,
+            maxPriorityFeePerGas: getFeeEstimate.fees.slow.maxPriorityFeePerGas,
+            maxFeePerGas: getFeeEstimate.fees.slow.maxFeePerGas,
+            nonce: defaultNonce,
+            data: '0x',
+            type: 2,
+            chainId: TESTNET.CHAIN_ID,
+        };
+
+        const privateKey = await optimismKeyring.exportAccount(accounts[0])
+        const signedTX = await optimismKeyring.signTransaction(rawTx, privateKey)
+        console.log("signedTX ", signedTX)
+        
+
+    })
 })

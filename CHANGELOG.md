@@ -47,3 +47,4 @@
 ### 1.0.9 (2023-12-11)
 
 - Added gas estimation for EIP-1559 transaction on Optimism.
+- Added support for Type-2 transactions signing.

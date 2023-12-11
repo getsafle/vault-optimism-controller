@@ -2,12 +2,16 @@
 const { EventEmitter } = require('events')
 const log = require('loglevel')
 const ethUtil = require('ethereumjs-util')
-const Tx = require('ethereumjs-tx');
 
 const bip39 = require('bip39')
 const ObservableStore = require('obs-store')
 const encryptor = require('browser-passworder')
 const { normalize: normalizeAddress } = require('eth-sig-util')
+
+const { Common, Hardfork } =require('@ethereumjs/common')
+const { FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
+const { bufferToHex } = require('ethereumjs-util')
+
 
 const SimpleKeyring = require('eth-simple-keyring')
 const HdKeyring = require('eth-hd-keyring')
@@ -256,50 +260,29 @@ class KeyringController extends EventEmitter {
     //
 
     /**
-     * Sign Optimism Transaction
-     *
-     * Signs an Optimism transaction object.
-     *
-     * @param {Object} optimismTx - The transaction to sign.
-     * @param {Object} web3 - web3 object.
-     * @returns {string} The signed transaction raw string.
-     */
+    * Sign Optimism Transaction 
+    *
+    * Signs an Base transaction object.
+    *
+    * @param {Object} rawTx - The transaction to sign.
+    * @returns {string} The signed transaction raw string.
+    */
 
-    async signTransaction(optimismTx, privateKey) {
-        const tx = new Tx(optimismTx);
+    async signTransaction(rawTx, privateKey) {
 
         const pkey = Buffer.from(privateKey, 'hex');
 
-        tx.sign(pkey);
+        const common = Common.custom({ chainId: chainId }, { hardfork: Hardfork.London })
 
-        const signedTx = `0x${tx.serialize().toString('hex')}`;
+        const tx = FeeMarketEIP1559Transaction.fromTxData(rawTx, { common });
 
-        return signedTx;
-    }
+        const signedTransaction = tx.sign(pkey);
 
-    /**
-     * Sign Transaction or Message to get v,r,s
-     *
-     * Signs a transaction object.
-     *
-     * @param {Object} rawTx - The transaction or message to sign.
-     * @param {Object} privateKey - The private key of the account.
-     * @param {Object} web3 - web3 object.
-     * @returns {Object} The signed transaction object.
-     */
-    async sign(rawTx, privateKey, web3) {
-        const block = await web3.eth.getBlockNumber();
-        console.log(block)
-        let signedTx;
-        let estimatedGas;
-        if (typeof rawTx === 'string')
-            signedTx = await web3.eth.accounts.sign(rawTx, privateKey);
-        else
-            // estimatedGas = await web3.eth.estimateGas(rawTx);
+        const signedTx = bufferToHex(signedTransaction.serialize());
 
-            signedTx = await web3.eth.accounts.signTransaction({ ...rawTx, gas: await web3.eth.estimateGas(rawTx) }, privateKey)
         return signedTx
     }
+
 
     /**
      * Sign Message
