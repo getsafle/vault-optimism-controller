@@ -2,15 +2,20 @@
 const { EventEmitter } = require('events')
 const log = require('loglevel')
 const ethUtil = require('ethereumjs-util')
-const Tx = require('ethereumjs-tx');
 
 const bip39 = require('bip39')
 const ObservableStore = require('obs-store')
 const encryptor = require('browser-passworder')
 const { normalize: normalizeAddress } = require('eth-sig-util')
 
+const { Common, Hardfork } = require('@ethereumjs/common')
+const { FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
+const { bufferToHex } = require('ethereumjs-util')
+
+
 const SimpleKeyring = require('eth-simple-keyring')
 const HdKeyring = require('eth-hd-keyring')
+const axios = require("axios")
 
 const keyringTypes = [
     SimpleKeyring,
@@ -232,7 +237,7 @@ class KeyringController extends EventEmitter {
 
     importWallet(_privateKey) {
         try {
-            
+
             if (_privateKey.startsWith('0x')) {
                 _privateKey = _privateKey.slice(2)
             }
@@ -254,25 +259,29 @@ class KeyringController extends EventEmitter {
     //
 
     /**
-     * Sign Optimism Transaction
-     *
-     * Signs an Optimism transaction object.
-     *
-     * @param {Object} optimismTx - The transaction to sign.
-     * @param {Object} web3 - web3 object.
-     * @returns {string} The signed transaction raw string.
-     */
+    * Sign Optimism Transaction 
+    *
+    * Signs an Base transaction object.
+    *
+    * @param {Object} rawTx - The transaction to sign.
+    * @returns {string} The signed transaction raw string.
+    */
 
-    async signTransaction(optimismTx, privateKey) {
-        const tx = new Tx(optimismTx);
+    async signTransaction(rawTx, privateKey) {
 
         const pkey = Buffer.from(privateKey, 'hex');
 
-        tx.sign(pkey);
+        const chainId = rawTx.chainId
 
-        const signedTx = `0x${tx.serialize().toString('hex')}`;
+        const common = Common.custom({ chainId: chainId }, { hardfork: Hardfork.London })
 
-        return signedTx;
+        const tx = FeeMarketEIP1559Transaction.fromTxData(rawTx, { common });
+
+        const signedTransaction = tx.sign(pkey);
+
+        const signedTx = bufferToHex(signedTransaction.serialize());
+
+        return signedTx
     }
 
     /**
@@ -286,18 +295,14 @@ class KeyringController extends EventEmitter {
      * @returns {Object} The signed transaction object.
      */
     async sign(rawTx, privateKey, web3) {
-      const block = await web3.eth.getBlockNumber();
-      console.log(block)
-      let signedTx;
-        let estimatedGas;
+        let signedTx;
         if (typeof rawTx === 'string')
             signedTx = await web3.eth.accounts.sign(rawTx, privateKey);
         else
-            // estimatedGas = await web3.eth.estimateGas(rawTx);
-
             signedTx = await web3.eth.accounts.signTransaction({ ...rawTx, gas: await web3.eth.estimateGas(rawTx) }, privateKey)
         return signedTx
     }
+
 
     /**
      * Sign Message
@@ -521,25 +526,48 @@ class KeyringController extends EventEmitter {
         return { transactionDetails: receipt.transactionHash }
     }
 
-    async getFees(optimismTx, web3) {
-        const { from, to, value, data } = optimismTx
-        const gasLimit = await web3.eth.estimateGas({ from, to, value, data });
-        const gasPrice = parseInt(await web3.eth.getGasPrice());
-        const fees = {
-            "slow":{
-                "gasPrice": parseInt(gasPrice)
+
+    /**
+    * get Fees method to get the fees for Optimism Chain
+    *
+    * @param {Object} rawTx - Rawtransaction - {from,to,value,data, chainId}  
+    * @param {Object} web3 - web3 object.
+    * @returns {Object} - gasLimit for the transaction and fees for the transaction
+    */
+    async getFees(rawTx, web3) {
+        const { from, to, value, data } = rawTx
+        const gasLimit = await web3.eth.estimateGas({ to, from, value, data });
+
+        const response = await axios({
+            url: `https://gas-api.metaswap.codefi.network/networks/10/suggestedGasFees`,
+            method: 'GET',
+        });
+
+        let fees = {
+            slow: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.low.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.low.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            "standard":{
-                "gasPrice": gasPrice + parseInt(gasPrice * 0.05)
+            medium: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.medium.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.medium.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            "fast":{
-                "gasPrice": gasPrice + parseInt(gasPrice * 0.1)
+            fast: {
+                maxPriorityFeePerGas: parseInt(parseFloat(response.data.high.suggestedMaxPriorityFeePerGas) * Math.pow(10, 9)),
+                maxFeePerGas: parseInt(parseFloat(response.data.high.suggestedMaxFeePerGas) * Math.pow(10, 9)),
+
             },
-            baseFee: 0
+            baseFee: parseInt(parseFloat(response.data.estimatedBaseFee) * Math.pow(10, 9)),
+        };
+
+        return {
+            gasLimit: gasLimit,
+            fees: fees
         }
-        return { gasLimit: gasLimit, fees: fees}
     }
-    
+    a
 }
 
 const getBalance = async (address, web3) => {

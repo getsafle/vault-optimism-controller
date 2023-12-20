@@ -43,3 +43,11 @@
 
 - Updated the getFees() method for gas estimation and added its test.
 - Changed the License to MIT.
+
+### 1.0.9 (2023-12-11)
+
+- Added gas estimation for EIP-1559 transaction on Optimism.
+- Added support for Type-2 transactions signing.
+
+- Added sign() to get v,r,s.
+- Removed 'signTransaction' dependency from 'getFees' method.
