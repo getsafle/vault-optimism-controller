@@ -48,3 +48,6 @@
 
 - Added gas estimation for EIP-1559 transaction on Optimism.
 - Added support for Type-2 transactions signing.
+
+- Added sign() to get v,r,s.
+- Removed 'signTransaction' dependency from 'getFees' method.
